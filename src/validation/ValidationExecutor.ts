@@ -175,9 +175,14 @@ export class ValidationExecutor {
     metadatas: ValidationMetadata[],
     validationErrors: ValidationError[]
   ): void {
-    const customValidationMetadatas = metadatas.filter(metadata => metadata.type === ValidationTypes.CUSTOM_VALIDATION);
-    const nestedValidationMetadatas = metadatas.filter(metadata => metadata.type === ValidationTypes.NESTED_VALIDATION);
-    const conditionalValidationMetadatas = metadatas.filter(
+    const conditionallyApprovedMetadatas = metadatas.filter(metadata => metadata.condition?.(value, object) ?? true);
+    const customValidationMetadatas = conditionallyApprovedMetadatas.filter(
+      metadata => metadata.type === ValidationTypes.CUSTOM_VALIDATION
+    );
+    const nestedValidationMetadatas = conditionallyApprovedMetadatas.filter(
+      metadata => metadata.type === ValidationTypes.NESTED_VALIDATION
+    );
+    const conditionalValidationMetadatas = conditionallyApprovedMetadatas.filter(
       metadata => metadata.type === ValidationTypes.CONDITIONAL_VALIDATION
     );
 
@@ -212,7 +217,7 @@ export class ValidationExecutor {
     this.customValidations(object, value, customValidationMetadatas, validationError);
     this.nestedValidations(value, nestedValidationMetadatas, validationError);
 
-    this.mapContexts(object, value, metadatas, validationError);
+    this.mapContexts(object, value, conditionallyApprovedMetadatas, validationError);
     this.mapContexts(object, value, customValidationMetadatas, validationError);
   }
 

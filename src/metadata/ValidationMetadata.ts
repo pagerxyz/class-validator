@@ -69,6 +69,11 @@ export class ValidationMetadata {
    */
   validationTypeOptions: any;
 
+  /**
+   * Controls whether the metadata should be executed against, governed by the config of validator
+   */
+  condition?: (value: any, object: any) => boolean;
+
   // -------------------------------------------------------------------------
   // Constructor
   // -------------------------------------------------------------------------
@@ -87,6 +92,7 @@ export class ValidationMetadata {
       this.always = args.validationOptions.always;
       this.each = args.validationOptions.each;
       this.context = args.validationOptions.context;
+      this.condition = args.validationOptions.condition;
     }
   }
 }

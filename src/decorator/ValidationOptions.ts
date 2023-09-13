@@ -29,6 +29,11 @@ export interface ValidationOptions {
    * A transient set of data passed through to the validation result for response mapping
    */
   context?: any;
+
+  /**
+   * Determines whether the specific validator should run
+   */
+  condition?: (value: any, object: any) => boolean;
 }
 
 export function isValidationOptions(val: any): val is ValidationOptions {
